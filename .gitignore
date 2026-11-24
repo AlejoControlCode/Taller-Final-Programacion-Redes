@@ -1,0 +1,5 @@
+node_modules/
+.env
+*.log
+# Enunciado del taller: contiene el listado de estudiantes, no se publica
+*.pdf

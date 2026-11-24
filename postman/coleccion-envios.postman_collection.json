@@ -1,0 +1,303 @@
+{
+  "info": {
+    "name": "Taller final - Programación de redes",
+    "description": "Pruebas de la API de envíos. La variable N debe coincidir con la constante N de server.js.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. GET válido (200)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código 200', () => pm.response.to.have.status(200));",
+              "pm.test('Devuelve X-Servidor-Procesado', () => pm.expect(pm.response.headers.get('X-Servidor-Procesado')).to.eql('Equipo-' + pm.collectionVariables.get('N')));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Red-Equipo",
+            "value": "CIAF-{{N}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/recurso",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "recurso"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2. POST válido (201)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código 201', () => pm.response.to.have.status(201));",
+              "pm.test('Devuelve X-Servidor-Procesado', () => pm.expect(pm.response.headers.get('X-Servidor-Procesado')).to.eql('Equipo-' + pm.collectionVariables.get('N')));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Red-Equipo",
+            "value": "CIAF-{{N}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/recurso",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "recurso"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"destinatario\": \"Marta Gil\",\n  \"ciudad\": \"Armenia\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3. GET sin X-Red-Equipo (401)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código 401', () => pm.response.to.have.status(401));",
+              "pm.test('Incluye JSON explicativo', () => pm.expect(pm.response.json()).to.have.property('mensaje'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/recurso",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "recurso"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4. GET con X-Red-Equipo incorrecto (401)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código 401', () => pm.response.to.have.status(401));",
+              "pm.test('Incluye JSON explicativo', () => pm.expect(pm.response.json()).to.have.property('mensaje'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Red-Equipo",
+            "value": "CIAF-999"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/recurso",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "recurso"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5. POST con datos incompletos (400)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código 400', () => pm.response.to.have.status(400));",
+              "pm.test('Incluye JSON explicativo', () => pm.expect(pm.response.json()).to.have.property('mensaje'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Red-Equipo",
+            "value": "CIAF-{{N}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/recurso",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "recurso"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ciudad\": \"Armenia\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "6. Verificación de encabezados de respuesta",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código 200', () => pm.response.to.have.status(200));",
+              "pm.test('Devuelve X-Servidor-Procesado', () => pm.expect(pm.response.headers.get('X-Servidor-Procesado')).to.eql('Equipo-' + pm.collectionVariables.get('N')));",
+              "pm.test('CORS permite solo el origen definido', () => pm.expect(pm.response.headers.get('Access-Control-Allow-Origin')).to.eql(pm.collectionVariables.get('origen')));",
+              "pm.test('La respuesta es JSON', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Red-Equipo",
+            "value": "CIAF-{{N}}"
+          },
+          {
+            "key": "Origin",
+            "value": "{{origen}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/recurso",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "recurso"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "7. Preflight CORS (204)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código 204', () => pm.response.to.have.status(204));",
+              "pm.test('Permite X-Red-Equipo', () => pm.expect(pm.response.headers.get('Access-Control-Allow-Headers')).to.include('X-Red-Equipo'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "OPTIONS",
+        "header": [
+          {
+            "key": "Origin",
+            "value": "{{origen}}"
+          },
+          {
+            "key": "Access-Control-Request-Method",
+            "value": "POST"
+          },
+          {
+            "key": "Access-Control-Request-Headers",
+            "value": "content-type,x-red-equipo"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/recurso",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "recurso"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3050"
+    },
+    {
+      "key": "N",
+      "value": "13"
+    },
+    {
+      "key": "origen",
+      "value": "http://localhost:5500"
+    }
+  ]
+}
